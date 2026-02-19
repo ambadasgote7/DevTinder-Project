@@ -19,44 +19,47 @@ import AuthLoader from "./routes/AuthLoader";
 import AdminUsersList from "./component/admin/AdminUsersList";
 import AdminUserDetails from "./component/admin/AdminUserDetails";
 import AdminConnectionsList from "./component/admin/AdminConnectionsList";
+import SocketManager from "./utils/SocketManager";
 
 function App() {
   return (
     <Provider store={appStore}>
       <AuthLoader>
-      <BrowserRouter basename="/">
-        <Routes>
+        <SocketManager />
 
-          {/* Public route */}
-          <Route path="/login" element={<Login />} />
-          <Route path="/admin/login" element={<AdminLogin />} />
+        <BrowserRouter basename="/">
+          <Routes>
 
-          {/* Protected user routes */}
-          <Route element={<ProtectedRoute />}>
-            <Route path="/" element={<Body />}>
-              <Route index element={<Feed />} />
-              <Route path="profile" element={<Profile />} />
-              <Route path="connections" element={<Connections />} />
-              <Route path="requests" element={<Requests />} />
-              <Route path="chat/:targetUserId" element={<Chat />} />
+            {/* Public route */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/admin/login" element={<AdminLogin />} />
+
+            {/* Protected user routes */}
+            <Route element={<ProtectedRoute />}>
+              <Route path="/" element={<Body />}>
+                <Route index element={<Feed />} />
+                <Route path="profile" element={<Profile />} />
+                <Route path="connections" element={<Connections />} />
+                <Route path="requests" element={<Requests />} />
+                <Route path="chat/:targetUserId" element={<Chat />} />
+              </Route>
             </Route>
-          </Route>
 
-          {/* Admin routes */}
-          <Route element={<AdminRoute />}>
-            <Route path="/admin" element={<AdminDashboard />} />
-            <Route path="/admin/users" element={<AdminUsersList />} />
-            <Route path="/admin/users/:userId" element={<AdminUserDetails />} />
-            <Route path="/admin/connections" element={<AdminConnectionsList />} />
-            <Route path="/admin/stats" element={<AdminStats />} />
-            
-          </Route>
+            {/* Admin routes */}
+            <Route element={<AdminRoute />}>
+              <Route path="/admin" element={<AdminDashboard />} />
+              <Route path="/admin/users" element={<AdminUsersList />} />
+              <Route path="/admin/users/:userId" element={<AdminUserDetails />} />
+              <Route path="/admin/connections" element={<AdminConnectionsList />} />
+              <Route path="/admin/stats" element={<AdminStats />} />
+            </Route>
 
-        </Routes>
-      </BrowserRouter>
+          </Routes>
+        </BrowserRouter>
       </AuthLoader>
     </Provider>
   );
 }
+
 
 export default App;
