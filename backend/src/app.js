@@ -2,7 +2,6 @@ const express = require("express");
 const http = require("http");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
-const helmet = require("helmet");
 require("dotenv").config();
 
 const connectDB = require("./config/database");
@@ -18,8 +17,6 @@ const PORT = process.env.PORT || 5000;
    GLOBAL MIDDLEWARES
 ======================= */
 
-// Security headers
-app.use(helmet());
 
 // CORS configuration (env based)
 app.use(
