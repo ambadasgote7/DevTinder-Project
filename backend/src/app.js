@@ -57,12 +57,14 @@ app.get("/health", (req, res) => {
 /* =======================
    STATIC FRONTEND (PRODUCTION)
 ======================= */
+const rootDir = path.resolve(__dirname, "../../");
 
-app.use(express.static(path.join(__dirname, "frontend", "dist")));
+app.use(express.static(path.join(rootDir, "frontend", "dist")));
 
-app.use((req, res) => {
-  res.sendFile(path.resolve(__dirname, "frontend", "dist", "index.html"));
+app.get("/{*splat}", (req, res) => {
+  res.sendFile(path.resolve(rootDir, "frontend", "dist", "index.html"));
 });
+
 
 
 /* =======================

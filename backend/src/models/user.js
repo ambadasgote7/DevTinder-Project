@@ -52,7 +52,7 @@ const userSchema = new mongoose.Schema({
     },
     photoUrl : {
         type : String,
-        default : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png",
+        default : "https://res.cloudinary.com/dm3qmhzrd/image/upload/v1771489310/student/resume/1771489309906-istockphoto-1300845620-2048x2048.jpg.jpg",
         validate(value) {
             if(!validator.isURL(value)) {
                 throw new Error("Invalid URL");
