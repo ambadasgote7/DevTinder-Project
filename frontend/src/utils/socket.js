@@ -27,16 +27,16 @@ export const connectSocket = () => {
 
   socket.on("connect", () => {
     if (socket.id) {
-      console.log("🟢 Socket connected:", socket.id);
+      //console.log("🟢 Socket connected:", socket.id);
     }
   });
 
   socket.on("disconnect", (reason) => {
-    console.log("🔴 Socket disconnected:", reason);
+  //  console.log("🔴 Socket disconnected:", reason);
   });
 
   socket.on("connect_error", (err) => {
-    console.error("❌ Socket error:", err.message);
+    //console.error("❌ Socket error:", err.message);
   });
 
   return socket;
