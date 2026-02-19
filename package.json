@@ -4,8 +4,9 @@
   "description": "tinder for devs",
   "main": "index.js",
   "scripts": {
-    "start": "node src/app.js",
-    "dev": "nodemon src/app.js"
+    "build" : "npm install && npm install --prefix frontend && npm run build --prefix frontend",
+    "start": "node backend/src/app.js",
+    "dev": "nodemon backend/src/app.js"
   },
   "keywords": [
     "nodejs",
@@ -19,6 +20,7 @@
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
+    "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.19.1",
     "node-cron": "^4.2.1",
