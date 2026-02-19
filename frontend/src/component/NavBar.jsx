@@ -4,57 +4,76 @@ import { Link, useNavigate } from "react-router-dom";
 import { BASE_URL } from "../utils/constants";
 import { removeUser } from "../utils/userSlice";
 import { disconnectSocket } from "../utils/socket";
+import { useState, useRef, useEffect } from "react";
 
 const NavBar = () => {
   const user = useSelector((store) => store.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const [open, setOpen] = useState(false);
+  const dropdownRef = useRef();
+
   const handleLogout = async () => {
-  try {
-    await axios.post(BASE_URL + "/logout", {}, { withCredentials: true });
+    try {
+      await axios.post(BASE_URL + "/logout", {}, { withCredentials: true });
 
-    disconnectSocket();   // ⭐ IMPORTANT
+      disconnectSocket();
+      dispatch(removeUser());
+      navigate("/login");
+      setOpen(false);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
-    dispatch(removeUser());
-    navigate("/login");
+  // Close when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (!dropdownRef.current?.contains(e.target)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
-  } catch (err) {
-    console.error(err);
-  }
-};
-
-
-  const getFeedPage = () => {
-    navigate("/");
+  const handleNavigate = (path) => {
+    navigate(path);
+    setOpen(false);
   };
 
   return (
-    <nav className="sticky top-0 z-50 bg-gray-950/95 backdrop-blur-md border-b border-gray-800 shadow-lg">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex justify-between items-center text-white">
+    <nav className="sticky top-0 z-50 bg-[#15173D]/95 backdrop-blur-xl border-b border-[#982598]/30 shadow-lg">
+      
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex justify-between items-center text-[#F1E9E9]">
 
-        {/* Brand Section */}
+        {/* Logo */}
         <div
-          className="flex items-center gap-2 text-2xl font-semibold tracking-wide hover:text-cyan-400 transition-colors duration-300"
+          onClick={() => navigate("/")}
+          className="cursor-pointer flex items-center gap-2"
         >
-          <span className="text-cyan-400">🧑‍💻</span>
-          <span className="hidden sm:inline"
-          onClick={getFeedPage}
-          >DevTinder</span>
+          <span className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-[#982598] to-[#E491C9] bg-clip-text text-transparent">
+            DevTinder
+          </span>
         </div>
 
-        {/* User Section */}
+        {/* User */}
         {user && (
-          <div className=" group">
+          <div className="relative" ref={dropdownRef}>
+
             <div
-              tabIndex={0}
-              role="button"
-              className="flex items-center gap-3 bg-gray-900/60 px-3 py-2 rounded-xl hover:bg-gray-800 cursor-pointer transition-all duration-300 border border-gray-800 hover:border-cyan-500/40"
+              onClick={() => setOpen(!open)}
+              className="flex items-center gap-3 bg-[#1E214F] px-3 py-2 rounded-xl cursor-pointer border border-[#982598]/30 hover:border-[#E491C9]/60 transition"
             >
-              <p className="hidden md:block text-sm font-medium text-gray-300">
-                Hey, <span className="font-semibold text-cyan-400">{user.firstName}</span>
+              <p className="hidden md:block text-sm">
+                Hey,{" "}
+                <span className="font-semibold text-[#E491C9]">
+                  {user.firstName}
+                </span>
               </p>
-              <div className="w-10 h-10 rounded-full border-2 border-cyan-500 overflow-hidden shadow-md">
+
+              <div className="w-10 h-10 rounded-full border-2 border-[#982598] overflow-hidden">
                 <img
                   src={user.photoUrl}
                   alt="User"
@@ -64,46 +83,39 @@ const NavBar = () => {
             </div>
 
             {/* Dropdown */}
-            <ul
-              tabIndex={0}
-              className="absolute right-0 mt-3 w-52 bg-gray-900/95 backdrop-blur-xl rounded-xl border border-gray-800 shadow-2xl p-2 text-gray-200 transform scale-95 opacity-0 group-focus-within:opacity-100 group-focus-within:scale-100 group-hover:opacity-100 group-hover:scale-100 transition-all duration-200 origin-top-right"
-            >
-              <li>
-                <Link
-                  to="/profile"
-                  className="flex justify-between items-center px-3 py-2 rounded-lg hover:bg-gray-800 text-base transition"
+            {open && (
+              <div className="absolute right-0 mt-3 w-52 bg-[#1E214F] rounded-xl border border-[#982598]/30 shadow-2xl p-2">
+
+                <button
+                  onClick={() => handleNavigate("/profile")}
+                  className="w-full text-left px-3 py-2 rounded-lg hover:bg-[#15173D] transition"
                 >
                   Profile
-                  <span className="bg-cyan-600 text-white text-xs px-2 py-0.5 rounded-md font-semibold">
-                    New
-                  </span>
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/connections"
-                  className="block px-3 py-2 rounded-lg hover:bg-gray-800 text-base transition"
+                </button>
+
+                <button
+                  onClick={() => handleNavigate("/connections")}
+                  className="w-full text-left px-3 py-2 rounded-lg hover:bg-[#15173D] transition"
                 >
                   Connections
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/requests"
-                  className="block px-3 py-2 rounded-lg hover:bg-gray-800 text-base transition"
+                </button>
+
+                <button
+                  onClick={() => handleNavigate("/requests")}
+                  className="w-full text-left px-3 py-2 rounded-lg hover:bg-[#15173D] transition"
                 >
                   Requests
-                </Link>
-              </li>
-              <li>
+                </button>
+
                 <button
                   onClick={handleLogout}
-                  className="w-full text-left px-3 py-2 rounded-lg text-red-400 font-semibold hover:bg-red-900/30 hover:text-red-300 transition"
+                  className="w-full text-left px-3 py-2 rounded-lg text-red-400 hover:bg-red-900/30 transition"
                 >
-                  Logout 🚪
+                  Logout
                 </button>
-              </li>
-            </ul>
+
+              </div>
+            )}
           </div>
         )}
       </div>

@@ -39,41 +39,108 @@ const Requests = () => {
         fetchRequests();
     }, []);
 
-    if(!requests) return;
+   if (!requests) return null;
 
-    if(requests.length === 0) return <h1 className="flex justify-center my-10">No Request Found</h1>
+if (requests.length === 0) {
+  return (
+    <div className="min-h-[80vh] flex items-center justify-center bg-[#15173D]">
+      <div className="bg-[#1E214F] border border-[#982598]/30 rounded-2xl p-8 text-center">
+        <h2 className="text-[#F1E9E9] text-xl font-semibold mb-2">
+          No Requests Found
+        </h2>
+        <p className="text-[#F1E9E9]/60 text-sm">
+          When someone is interested in you, it will appear here.
+        </p>
+      </div>
+    </div>
+  );
+}
 
-    return (
-        <div className="justify-items-center my-10">
-        <h1 className="text-bold text-white text-3xl">Connection Request</h1>
+return (
+  <div className="min-h-screen bg-[#15173D] px-4 sm:px-6 py-10">
+
+    <div className="max-w-4xl mx-auto">
+
+      <h1 className="text-3xl font-bold text-[#F1E9E9] mb-8">
+        Connection Requests
+      </h1>
+
+      <div className="space-y-4">
 
         {requests.map((request) => {
-            const {_id, firstName, lastName, photoUrl, age, gender, about} = request.fromUserId;
-            return (
-                <div key={_id} className="flex justify-between justify-items-center m-4 p-4 rounded-lg bg-base-300 w-2/3">
-                   <div>
-                    <img 
-                    alt="" 
-                    className="w-20 h-20 rounded-full"
-                    src={photoUrl}
-                    />
-                   </div>
-                   <div className="text-left mx-4">
-                    <h2 className="font-bold text-xl">
-                        {firstName + " " + lastName}
-                    </h2>
-                    { age && gender && <p>{age + " | " + gender}</p> }
-                    <p>{about}</p>
-                   </div>
-                    <div>                    
-                        <button className="btn btn-soft btn-primary mx-2" onClick={() => reviewRequest("accepted", request._id)}>Accept</button>
-                        <button className="btn btn-soft btn-secondary mx-2" onClick={() => reviewRequest("rejected", request._id)}>Reject</button>
-                   </div>
+          const {
+            _id,
+            firstName,
+            lastName,
+            photoUrl,
+            age,
+            gender,
+            about,
+          } = request.fromUserId;
+
+          return (
+            <div
+              key={request._id}
+              className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl bg-[#1E214F] border border-[#982598]/30 shadow-lg hover:shadow-xl transition"
+            >
+
+              {/* Left */}
+              <div className="flex items-center gap-4">
+
+                <img
+                  src={photoUrl}
+                  alt=""
+                  className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover border-2 border-[#982598]"
+                />
+
+                <div>
+                  <h2 className="text-lg font-semibold text-[#F1E9E9]">
+                    {firstName} {lastName}
+                  </h2>
+
+                  {age && gender && (
+                    <p className="text-sm text-[#F1E9E9]/60">
+                      {age} • {gender}
+                    </p>
+                  )}
+
+                  <p className="text-sm text-[#F1E9E9]/70 line-clamp-1">
+                    {about}
+                  </p>
                 </div>
-            );
-        })}      
-        </div>
-    );
+              </div>
+
+              {/* Buttons */}
+              <div className="flex gap-3">
+
+                <button
+                  onClick={() =>
+                    reviewRequest("accepted", request._id)
+                  }
+                  className="px-5 py-2 rounded-xl font-medium bg-gradient-to-r from-green-500 to-emerald-400 text-white shadow-md hover:scale-[1.05] transition"
+                >
+                  Accept
+                </button>
+
+                <button
+                  onClick={() =>
+                    reviewRequest("rejected", request._id)
+                  }
+                  className="px-5 py-2 rounded-xl font-medium border border-red-400 text-red-400 hover:bg-red-900/30 transition"
+                >
+                  Reject
+                </button>
+
+              </div>
+
+            </div>
+          );
+        })}
+
+      </div>
+    </div>
+  </div>
+);
 };
 
 export default Requests;

@@ -83,134 +83,147 @@ const EditProfile = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 px-6 py-10">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10">
+  <div className="min-h-screen bg-[#15173D] px-4 sm:px-6 py-10">
 
-        {/* ================= FORM ================= */}
-        <div className="bg-gray-800 rounded-2xl shadow-xl p-8 space-y-5">
-          <h2 className="text-2xl font-bold text-white">
-            Edit Profile
-          </h2>
+    <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10">
 
+      {/* ================= FORM ================= */}
+      <div className="bg-[#1E214F] border border-[#982598]/30 rounded-3xl shadow-2xl p-8 space-y-6">
+
+        <h2 className="text-2xl font-bold text-[#F1E9E9]">
+          Edit Profile
+        </h2>
+
+        {/* Name */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <input
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
             placeholder="First Name"
-            className="input input-bordered w-full"
+            className="w-full px-4 py-3 rounded-xl bg-[#15173D] border border-[#982598]/30 text-[#F1E9E9] focus:outline-none focus:ring-2 focus:ring-[#E491C9]"
           />
 
           <input
             value={lastName}
             onChange={(e) => setLastName(e.target.value)}
             placeholder="Last Name"
-            className="input input-bordered w-full"
+            className="w-full px-4 py-3 rounded-xl bg-[#15173D] border border-[#982598]/30 text-[#F1E9E9] focus:outline-none focus:ring-2 focus:ring-[#E491C9]"
           />
+        </div>
 
+        {/* Photo */}
+        <input
+          value={photoUrl}
+          onChange={(e) => setPhotoUrl(e.target.value)}
+          placeholder="Photo URL"
+          className="w-full px-4 py-3 rounded-xl bg-[#15173D] border border-[#982598]/30 text-[#F1E9E9] focus:outline-none focus:ring-2 focus:ring-[#E491C9]"
+        />
+
+        {/* Age + Gender */}
+        <div className="grid grid-cols-2 gap-4">
           <input
-            value={photoUrl}
-            onChange={(e) => setPhotoUrl(e.target.value)}
-            placeholder="Photo URL"
-            className="input input-bordered w-full"
+            value={age}
+            onChange={(e) => setAge(e.target.value)}
+            placeholder="Age"
+            className="w-full px-4 py-3 rounded-xl bg-[#15173D] border border-[#982598]/30 text-[#F1E9E9] focus:outline-none focus:ring-2 focus:ring-[#E491C9]"
           />
 
-          <div className="grid grid-cols-2 gap-4">
-            <input
-              value={age}
-              onChange={(e) => setAge(e.target.value)}
-              placeholder="Age"
-              className="input input-bordered w-full"
-            />
-
-            <select
-              value={gender}
-              onChange={(e) => setGender(e.target.value)}
-              className="select select-bordered w-full"
-            >
-              <option value="">Gender</option>
-              <option value="Male">Male</option>
-              <option value="Female">Female</option>
-              <option value="Other">Other</option>
-            </select>
-          </div>
-
-          <textarea
-            value={about}
-            onChange={(e) => setAbout(e.target.value)}
-            placeholder="About you"
-            className="textarea textarea-bordered w-full min-h-[120px]"
-          />
-
-          {/* ===== SKILLS INPUT (FIXED UX) ===== */}
-          <input
-            value={skillsInput}
-            onChange={(e) => {
-              const value = e.target.value;
-              setSkillsInput(value);
-
-              setSkills(
-                value
-                  .split(",")
-                  .map((s) => s.trim())
-                  .filter((s) => s.length > 0)
-              );
-            }}
-            placeholder="Skills (comma separated)"
-            className="input input-bordered w-full"
-          />
-
-          {/* ===== Skill Chips ===== */}
-          {skills.length > 0 && (
-            <div className="flex flex-wrap gap-2">
-              {skills.map((skill, i) => (
-                <span
-                  key={i}
-                  className="px-3 py-1 rounded-full text-sm bg-blue-600/20 text-blue-300"
-                >
-                  {skill}
-                </span>
-              ))}
-            </div>
-          )}
-
-          <button
-            onClick={saveProfile}
-            disabled={saving}
-            className="btn btn-primary w-full mt-4"
+          <select
+            value={gender}
+            onChange={(e) => setGender(e.target.value)}
+            className="w-full px-4 py-3 rounded-xl bg-[#15173D] border border-[#982598]/30 text-[#F1E9E9] focus:outline-none focus:ring-2 focus:ring-[#E491C9]"
           >
-            {saving ? "Saving..." : "Save Profile"}
-          </button>
-
-          {error && (
-            <p className="text-red-500 text-sm">{error}</p>
-          )}
+            <option value="">Gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+          </select>
         </div>
 
-        {/* ================= PREVIEW ================= */}
-        <div className="flex justify-center">
-          <UserCard
-            user={{
-              firstName,
-              lastName,
-              photoUrl,
-              age,
-              gender,
-              about,
-              skills,
-            }}
-          />
-        </div>
+        {/* About */}
+        <textarea
+          value={about}
+          onChange={(e) => setAbout(e.target.value)}
+          placeholder="About you"
+          className="w-full px-4 py-3 rounded-xl min-h-[120px] bg-[#15173D] border border-[#982598]/30 text-[#F1E9E9] focus:outline-none focus:ring-2 focus:ring-[#E491C9]"
+        />
+
+        {/* Skills */}
+        <input
+          value={skillsInput}
+          onChange={(e) => {
+            const value = e.target.value;
+            setSkillsInput(value);
+
+            setSkills(
+              value
+                .split(",")
+                .map((s) => s.trim())
+                .filter((s) => s.length > 0)
+            );
+          }}
+          placeholder="Skills (comma separated)"
+          className="w-full px-4 py-3 rounded-xl bg-[#15173D] border border-[#982598]/30 text-[#F1E9E9] focus:outline-none focus:ring-2 focus:ring-[#E491C9]"
+        />
+
+        {/* Skill Chips */}
+        {skills.length > 0 && (
+          <div className="flex flex-wrap gap-2">
+            {skills.map((skill, i) => (
+              <span
+                key={i}
+                className="px-3 py-1 text-sm rounded-full bg-[#15173D] border border-[#982598]/40 text-[#E491C9]"
+              >
+                {skill}
+              </span>
+            ))}
+          </div>
+        )}
+
+        {/* Save Button */}
+        <button
+          onClick={saveProfile}
+          disabled={saving}
+          className="w-full py-3 rounded-xl font-semibold bg-gradient-to-r from-[#982598] to-[#E491C9] text-white shadow-lg hover:scale-[1.02] transition"
+        >
+          {saving ? "Saving..." : "Save Profile"}
+        </button>
+
+        {error && (
+          <p className="text-red-400 text-sm">{error}</p>
+        )}
       </div>
 
-      {/* ================= TOAST ================= */}
-      {showToast && (
-        <div className="toast toast-top toast-center z-50">
-          <div className="alert alert-success shadow-lg">
-            Profile updated successfully 🚀
-          </div>
-        </div>
-      )}
+      {/* ================= PREVIEW ================= */}
+      <div className="flex flex-col items-center justify-center gap-4">
+
+        <p className="text-[#F1E9E9]/60 text-sm">
+          Live Preview
+        </p>
+
+        <UserCard
+          user={{
+            firstName,
+            lastName,
+            photoUrl,
+            age,
+            gender,
+            about,
+            skills,
+          }}
+        />
+      </div>
+
     </div>
-  );
+
+    {/* ================= TOAST ================= */}
+    {showToast && (
+      <div className="fixed top-6 left-1/2 -translate-x-1/2 bg-[#1E214F] border border-[#982598]/40 px-6 py-3 rounded-xl shadow-2xl text-[#F1E9E9]">
+        Profile updated successfully 🚀
+      </div>
+    )}
+  </div>
+);
 };
 
 export default EditProfile;

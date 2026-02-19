@@ -71,72 +71,106 @@ const Connections = () => {
 
   if (!connections) return null;
 
-  if (connections.length === 0) return <h1>No Connections Found</h1>;
-
+if (connections.length === 0) {
   return (
-    <div className="justify-items-center my-10">
-      <h1 className="text-bold text-white text-3xl">Connections</h1>
-
-      {connections.map((connection) => {
-        const {
-          _id,
-          firstName,
-          lastName,
-          photoUrl,
-          age,
-          gender,
-          about,
-        } = connection;
-
-        const isOnline = onlineUsers.has(_id);
-
-        return (
-          <div
-            key={_id}
-            className="flex m-4 p-4 rounded-lg bg-base-300 w-1/2 items-center justify-between"
-          >
-            <div className="flex items-center">
-              <div className="relative">
-                <img
-                  alt=""
-                  className="w-20 h-20 rounded-full"
-                  src={photoUrl}
-                />
-
-                {/* ONLINE DOT */}
-                {isOnline && (
-                  <span className="absolute bottom-1 right-1 w-4 h-4 bg-green-500 border-2 border-white rounded-full"></span>
-                )}
-              </div>
-
-              <div className="text-left mx-4">
-                <h2 className="font-bold text-xl">
-                  {firstName + " " + lastName}
-                </h2>
-
-                {age && gender && <p>{age + " | " + gender}</p>}
-
-                <p>{about}</p>
-
-                {/* STATUS TEXT */}
-                <p
-                  className={`text-sm ${
-                    isOnline ? "text-green-400" : "text-gray-400"
-                  }`}
-                >
-                  {isOnline ? "Online" : "Offline"}
-                </p>
-              </div>
-            </div>
-
-            <Link to={"/chat/" + _id}>
-              <button className="btn btn-primary">Chat</button>
-            </Link>
-          </div>
-        );
-      })}
+    <div className="min-h-[80vh] flex items-center justify-center bg-[#15173D]">
+      <div className="bg-[#1E214F] border border-[#982598]/30 rounded-2xl p-8 text-center">
+        <h2 className="text-[#F1E9E9] text-xl font-semibold mb-2">
+          No Connections Yet
+        </h2>
+        <p className="text-[#F1E9E9]/60 text-sm">
+          Start swiping to build your network 🚀
+        </p>
+      </div>
     </div>
   );
+}
+
+return (
+  <div className="min-h-screen bg-[#15173D] px-4 sm:px-6 py-10">
+
+    <div className="max-w-4xl mx-auto">
+
+      <h1 className="text-3xl font-bold text-[#F1E9E9] mb-8">
+        Your Connections
+      </h1>
+
+      <div className="space-y-4">
+
+        {connections.map((connection) => {
+          const {
+            _id,
+            firstName,
+            lastName,
+            photoUrl,
+            age,
+            gender,
+            about,
+          } = connection;
+
+          const isOnline = onlineUsers.has(_id);
+
+          return (
+            <div
+              key={_id}
+              className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl bg-[#1E214F] border border-[#982598]/30 shadow-lg hover:shadow-xl transition"
+            >
+
+              {/* Left */}
+              <div className="flex items-center gap-4">
+
+                <div className="relative">
+                  <img
+                    src={photoUrl}
+                    alt=""
+                    className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover border-2 border-[#982598]"
+                  />
+
+                  {isOnline && (
+                    <span className="absolute bottom-1 right-1 w-4 h-4 bg-green-500 border-2 border-[#1E214F] rounded-full"></span>
+                  )}
+                </div>
+
+                <div>
+                  <h2 className="text-lg font-semibold text-[#F1E9E9]">
+                    {firstName} {lastName}
+                  </h2>
+
+                  {age && gender && (
+                    <p className="text-sm text-[#F1E9E9]/60">
+                      {age} • {gender}
+                    </p>
+                  )}
+
+                  <p className="text-sm text-[#F1E9E9]/70 line-clamp-1">
+                    {about}
+                  </p>
+
+                  <p
+                    className={`text-xs mt-1 ${
+                      isOnline ? "text-green-400" : "text-gray-400"
+                    }`}
+                  >
+                    {isOnline ? "Online" : "Offline"}
+                  </p>
+                </div>
+              </div>
+
+              {/* Chat Button */}
+              <Link to={"/chat/" + _id}>
+                <button className="px-5 py-2 rounded-xl font-medium bg-gradient-to-r from-[#982598] to-[#E491C9] text-white shadow-md hover:scale-[1.05] transition">
+                  Chat
+                </button>
+              </Link>
+
+            </div>
+          );
+        })}
+
+      </div>
+    </div>
+  </div>
+);
 };
 
 export default Connections;

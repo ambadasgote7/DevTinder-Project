@@ -5,6 +5,7 @@ import appStore from "./utils/appStore";
 import Body from "./component/Body";
 import Login from "./component/Login";
 import Profile from "./component/Profile";
+import ErrorPage from "./component/ErrorPage";
 import Feed from "./component/Feed";
 import Connections from "./component/Connections";
 import Requests from "./component/Requests";
@@ -20,6 +21,7 @@ import AdminUsersList from "./component/admin/AdminUsersList";
 import AdminUserDetails from "./component/admin/AdminUserDetails";
 import AdminConnectionsList from "./component/admin/AdminConnectionsList";
 import SocketManager from "./utils/SocketManager";
+
 
 function App() {
   return (
@@ -53,6 +55,10 @@ function App() {
               <Route path="/admin/connections" element={<AdminConnectionsList />} />
               <Route path="/admin/stats" element={<AdminStats />} />
             </Route>
+
+            {/* Error page */}
+            <Route path="/error" element={<ErrorPage />} />
+            <Route path="*" element={<ErrorPage />} />
 
           </Routes>
         </BrowserRouter>

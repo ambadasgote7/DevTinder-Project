@@ -2,64 +2,145 @@ import axios from "axios";
 import { BASE_URL } from "../utils/constants";
 import { useDispatch } from "react-redux";
 import { removeUserFromFeed } from "../utils/feedSlice";
+import { motion, useMotionValue, useTransform } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 const UserCard = ({ user }) => {
-    const {_id, firstName, lastName, photoUrl, age, gender, about, skills } = user;
-    const dispatch = useDispatch();
+  const {
+    _id,
+    firstName,
+    lastName,
+    photoUrl,
+    age,
+    gender,
+    about,
+    skills = [],
+  } = user;
 
-    const handleRequest = async (status, userId) => {
-        try {
-            const res = await axios.post(BASE_URL + "/request/send/" + status + "/" + userId, 
-                {},
-                { withCredentials : true },
-            );
-            dispatch(removeUserFromFeed(userId));
-        } catch (err) {
-            console.log(err);
-        }
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const x = useMotionValue(0);
+
+  const rotate = useTransform(x, [-200, 200], [-20, 20]);
+  const likeOpacity = useTransform(x, [0, 120], [0, 1]);
+  const nopeOpacity = useTransform(x, [-120, 0], [1, 0]);
+
+  const handleRequest = async (status) => {
+    try {
+      await axios.post(
+        BASE_URL + "/request/send/" + status + "/" + _id,
+        {},
+        { withCredentials: true }
+      );
+
+      dispatch(removeUserFromFeed(_id));
+    } catch (err) {
+      navigate("/error", {
+        state: {
+          code: err?.response?.status || 500,
+          title: "Request Failed",
+          message:
+            err?.response?.data ||
+            "Unable to send request. Please try again later.",
+        },
+      });
     }
+  };
 
-    return (
-        <div className="flex items-center justify-center p-4">
-            <div className="card bg-base-100 w-96 shadow-2xl hover:shadow-3xl transition-shadow duration-300 overflow-hidden">
-                <figure className="relative h-80 overflow-hidden">
-                    <img
-                        src={photoUrl}
-                        alt={`${firstName} ${lastName}`}
-                        className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
-                </figure>
-                <div className="card-body bg-gradient-to-b from-base-100 to-base-200">
-                    <h2 className="card-title text-3xl font-bold text-primary mb-2">
-                        {firstName + " " + lastName}
-                    </h2>
-                    {age && gender && (
-                        <p className="text-sm font-medium text-base-content/70 mb-3 flex items-center gap-2">
-                            <span className="badge badge-outline">{age}</span>
-                            <span className="badge badge-outline">{gender}</span>
-                        </p>
-                    )}
-                    <p>
-                        {skills.length > 0 && (
-                            <span className="badge badge-outline">
-                                {skills.join(", ")}
-                            </span>
-                        )}
-                    </p>
-                    <p className="text-base text-base-content/80 leading-relaxed mb-4 line-clamp-3">
-                        {about}
-                    </p>
-                    <div className="card-actions justify-center gap-4 mt-4">
-                        <button className="btn btn-primary btn-lg flex-1 hover:scale-105 transition-transform" onClick={() => handleRequest ("interested",_id)}>
-                            ❤️ Interested
-                        </button>
-                        <button className="btn btn-ghost btn-lg flex-1 hover:scale-105 transition-transform" onClick={() => handleRequest ("ignored",_id)}>
-                            ✕ Ignore
-                        </button>
-                    </div>
+  const handleDragEnd = (_, info) => {
+    if (info.offset.x > 140) {
+      handleRequest("interested");
+    } else if (info.offset.x < -140) {
+      handleRequest("ignored");
+    }
+  };
+
+  return (
+    <div className="flex items-center justify-center min-h-[85vh] px-4">
+
+      <motion.div
+        className="relative w-full max-w-sm"
+        drag="x"
+        style={{ x, rotate }}
+        dragConstraints={{ left: 0, right: 0 }}
+        onDragEnd={handleDragEnd}
+        whileTap={{ scale: 0.97 }}
+      >
+        {/* LIKE / NOPE BADGES */}
+        <motion.div
+          style={{ opacity: likeOpacity }}
+          className="absolute top-6 right-6 z-20 px-4 py-2 rounded-xl border-2 border-green-400 text-green-400 font-bold text-lg bg-black/40"
+        >
+          LIKE
+        </motion.div>
+
+        <motion.div
+          style={{ opacity: nopeOpacity }}
+          className="absolute top-6 left-6 z-20 px-4 py-2 rounded-xl border-2 border-red-400 text-red-400 font-bold text-lg bg-black/40"
+        >
+          NOPE
+        </motion.div>
+
+        {/* CARD */}
+        <div className="rounded-3xl overflow-hidden shadow-[0_25px_60px_rgba(0,0,0,0.6)] border border-[#982598]/30 bg-[#1E214F]">
+
+          {/* IMAGE */}
+          <div className="relative h-[480px]">
+            <img
+              src={photoUrl}
+              alt={firstName}
+              className="w-full h-full object-cover"
+            />
+
+            {/* Gradient overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
+
+            {/* USER INFO OVER IMAGE */}
+            <div className="absolute bottom-0 p-5 text-[#F1E9E9]">
+
+              <h2 className="text-3xl font-bold">
+                {firstName} {lastName}
+              </h2>
+
+              {age && gender && (
+                <p className="text-sm opacity-80 mb-2">
+                  {age} • {gender}
+                </p>
+              )}
+
+              {/* Skills */}
+              {skills.length > 0 && (
+                <div className="flex flex-wrap gap-2 mb-2">
+                  {skills.slice(0, 4).map((skill, i) => (
+                    <span
+                      key={i}
+                      className="px-2 py-1 text-xs rounded-full bg-[#15173D]/80 border border-[#982598]/40"
+                    >
+                      {skill}
+                    </span>
+                  ))}
                 </div>
+              )}
+
+              {/* About */}
+              <p className="text-sm opacity-90 line-clamp-2">
+                {about}
+              </p>
             </div>
+          </div>
+
         </div>
-    );
+
+        {/* Swipe Hint */}
+        <div className="text-center text-xs text-[#F1E9E9]/50 mt-3">
+          Swipe left to ignore • Swipe right to connect
+        </div>
+
+      </motion.div>
+
+    </div>
+  );
 };
 
 export default UserCard;

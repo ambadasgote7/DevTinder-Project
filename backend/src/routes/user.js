@@ -87,6 +87,7 @@ userRouter.get('/feed', isAuthenticated, async (req, res) => {
             $and : [
                 {_id : {$nin : Array.from(hideUsersFromFeed)}},
                 {_id : {$ne : loggedInUser._id}},
+                {role: { $ne: "admin" }},  
             ],
         }).select(USER_SAFE_DATA).skip(skip).limit(limit);
 
